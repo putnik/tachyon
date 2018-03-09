@@ -11,7 +11,15 @@
     "publish": "electron-forge publish",
     "lint": "eslint --cache --color --ext .jsx,.js src"
   },
-  "keywords": ["wiki", "wikipedia", "wikimedia", "mediawiki", "editor", "electron", "react"],
+  "keywords": [
+    "wiki",
+    "wikipedia",
+    "wikimedia",
+    "mediawiki",
+    "editor",
+    "electron",
+    "react"
+  ],
   "author": "Sergey Leschina <mail@putnik.tech>",
   "license": "MIT",
   "config": {
