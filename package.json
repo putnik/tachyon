@@ -12,15 +12,15 @@
     "lint": "eslint --cache --color --ext .jsx,.js src"
   },
   "keywords": [
-    "wiki",
-    "wikipedia",
-    "wikimedia",
-    "mediawiki",
     "editor",
     "electron",
-    "react"
+    "mediawiki",
+    "react",
+    "wiki",
+    "wikimedia",
+    "wikipedia"
   ],
-  "author": "Sergey Leschina <mail@putnik.tech>",
+  "author": "putnik",
   "license": "MIT",
   "config": {
     "forge": {
@@ -38,6 +38,7 @@
       },
       "electronPackagerConfig": {
         "packageManager": "npm",
+        "asar": true,
         "icon": "src/assets/icons/icon"
       },
       "electronWinstallerConfig": {
@@ -46,8 +47,9 @@
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
       "github_repository": {
-        "owner": "",
-        "name": ""
+        "owner": "putnik",
+        "name": "tachyon",
+        "draft": true
       },
       "windowsStoreConfig": {
         "packageName": "",
