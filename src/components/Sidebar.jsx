@@ -1,5 +1,8 @@
 import React from 'react';
 import AppDispatcher from './AppDispatcher';
+import Search from './Search';
+
+const storage = require('electron-json-storage');
 
 export default class Sidebar extends React.Component {
   constructor(props) {
@@ -10,19 +13,28 @@ export default class Sidebar extends React.Component {
       isLoaded: false,
       defaultItems: [
         { icon: 'home', title: 'Заглавная страница' },
+        { icon: 'home', title: 'Википедия:Сообщество' },
       ],
-      favouriteItems: [
-        { icon: 'bookmark', title: 'Electron' },
-        { icon: 'bookmark', title: 'WebStorm' },
-      ],
-      recentItems: [
-        { icon: 'back-in-time', title: 'Антикварианизм' },
-        { icon: 'back-in-time', title: 'Ваан' },
-        { icon: 'back-in-time', title: 'Чернявский, Василий Тимофеевич' },
-      ],
+      favouriteItems: [],
+      recentItems: [],
     };
 
-    const editor = this;
+    storage.get('favoriteItems', (error, data) => {
+      if (error) throw error;
+
+      this.setState({
+        favouriteItems: data ? Object.values(data) : [],
+      });
+    });
+
+    storage.get('recentItems', (error, data) => {
+      if (error) throw error;
+
+      this.setState({
+        recentItems: data ? Object.values(data) : [],
+      });
+    });
+
     AppDispatcher.register((payload) => {
       if (payload.event === 'pageLoaded') {
         let recentItems = this.state.recentItems;
@@ -32,8 +44,12 @@ export default class Sidebar extends React.Component {
           return item;
         });
         recentItems.unshift({ icon: 'back-in-time', title: payload.title, active: true });
+        recentItems.slice(0, 10);
         this.setState({
           recentItems: recentItems,
+        });
+        storage.set('recentItems', recentItems, (error) => {
+          if (error) throw error;
         });
       }
     });
@@ -74,11 +90,7 @@ export default class Sidebar extends React.Component {
   render() {
     return (
       <div className="pane pane-sm sidebar">
-        <nav className="nav-group">
-          <h5 className="nav-group-title">
-            <input className="form-control" type="text" placeholder="Введите название статьи" />
-          </h5>
-        </nav>
+        <Search />
         {this.renderSidebarGroup({ id: 'default', title: '', items: this.state.defaultItems })}
         {this.renderSidebarGroup({ id: 'favorite', title: 'Favorite', items: this.state.favouriteItems })}
         {this.renderSidebarGroup({ id: 'recent', title: 'Recent', items: this.state.recentItems })}

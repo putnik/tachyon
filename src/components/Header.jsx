@@ -1,4 +1,5 @@
 import React from 'react';
+import Tabs from './Tabs';
 
 export default class Header extends React.Component {
   constructor(props) {
@@ -31,6 +32,7 @@ export default class Header extends React.Component {
             {this.state.date.toLocaleTimeString('ru', { timeZone: 'UTC' }) + ' UTC'}
           </button>
         </div>
+        <Tabs />
       </header>
     );
   }
