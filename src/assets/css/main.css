@@ -1,4 +1,12 @@
+@import "photon.css";
+@import "../../../node_modules/codemirror/lib/codemirror.css";
+
 tool-bar[type=header],
 tool-bar[type=footer] {
 	text-align: center;
+}
+
+.react-codemirror2,
+.CodeMirror {
+	height: 100%;
 }

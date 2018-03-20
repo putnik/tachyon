@@ -3,6 +3,7 @@ import AppDispatcher from './AppDispatcher';
 import Search from './Search';
 
 const storage = require('electron-json-storage');
+const shortid = require('shortid');
 
 export default class Sidebar extends React.Component {
   constructor(props) {
@@ -11,44 +12,44 @@ export default class Sidebar extends React.Component {
     this.state = {
       error: null,
       isLoaded: false,
-      defaultItems: [
+      defaultPages: [
         { icon: 'home', title: 'Заглавная страница' },
         { icon: 'home', title: 'Википедия:Сообщество' },
       ],
-      favouriteItems: [],
-      recentItems: [],
+      favoritePages: [],
+      recentPages: [],
     };
 
-    storage.get('favoriteItems', (error, data) => {
+    storage.get('favoritePages', (error, data) => {
       if (error) throw error;
 
       this.setState({
-        favouriteItems: data ? Object.values(data) : [],
+        favoritePages: data ? Object.values(data) : [],
       });
     });
 
-    storage.get('recentItems', (error, data) => {
+    storage.get('recentPages', (error, data) => {
       if (error) throw error;
 
       this.setState({
-        recentItems: data ? Object.values(data) : [],
+        recentPages: data ? Object.values(data) : [],
       });
     });
 
     AppDispatcher.register((payload) => {
       if (payload.event === 'pageLoaded') {
-        let recentItems = this.state.recentItems;
-        recentItems.filter(item => item.title === payload.title);
-        recentItems = recentItems.map((item) => {
-          item.active = false;
-          return item;
+        let recentPages = this.state.recentPages;
+        recentPages = recentPages.filter(item => item.title !== payload.title);
+        recentPages = recentPages.map((page) => {
+          page.active = false;
+          return page;
         });
-        recentItems.unshift({ icon: 'back-in-time', title: payload.title, active: true });
-        recentItems.slice(0, 10);
+        recentPages.unshift({ icon: 'back-in-time', title: payload.title, active: true });
+        recentPages.slice(0, 10);
         this.setState({
-          recentItems: recentItems,
+          recentPages: recentPages,
         });
-        storage.set('recentItems', recentItems, (error) => {
+        storage.set('recentPages', recentPages, (error) => {
           if (error) throw error;
         });
       }
@@ -64,7 +65,7 @@ export default class Sidebar extends React.Component {
 
   renderSidebarGroupItem(props) {
     return (
-      <a href="#" key={props.title} className={'nav-group-item' + (props.active ? ' active' : '')} onClick={(e) => this.handleGroupItemClick(props.title)}>
+      <a href="#" key={shortid.generate()} className={'nav-group-item' + (props.active ? ' active' : '')} onClick={(e) => this.handleGroupItemClick(props.title)}>
         <span className={'icon icon-' + props.icon} />
         {props.title}
       </a>
@@ -91,9 +92,9 @@ export default class Sidebar extends React.Component {
     return (
       <div className="pane pane-sm sidebar">
         <Search />
-        {this.renderSidebarGroup({ id: 'default', title: '', items: this.state.defaultItems })}
-        {this.renderSidebarGroup({ id: 'favorite', title: 'Favorite', items: this.state.favouriteItems })}
-        {this.renderSidebarGroup({ id: 'recent', title: 'Recent', items: this.state.recentItems })}
+        {this.renderSidebarGroup({ id: 'default', title: '', items: this.state.defaultPages })}
+        {this.renderSidebarGroup({ id: 'favorite', title: 'Favorite', items: this.state.favoritePages })}
+        {this.renderSidebarGroup({ id: 'recent', title: 'Recent', items: this.state.recentPages })}
       </div>
     );
   }

@@ -2,6 +2,7 @@ import React from 'react';
 import AppDispatcher from './AppDispatcher';
 
 const storage = require('electron-json-storage');
+const shortid = require('shortid');
 
 export default class Tabs extends React.Component {
   constructor(props) {
@@ -22,12 +23,17 @@ export default class Tabs extends React.Component {
     AppDispatcher.register((payload) => {
       if (payload.event === 'pageLoaded') {
         let openPages = this.state.openPages;
-        openPages.filter(item => item.title === payload.title);
+        const activePage = openPages.find(page => page.title === payload.title);
         openPages = openPages.map((page) => {
-          page.active = false;
+          page.active = (page.title === payload.title);
           return page;
         });
-        openPages.push({ title: payload.title, active: true });
+        if (activePage === undefined) {
+          openPages.push({
+            title: payload.title,
+            active: true,
+          });
+        }
         this.setOpenPages(openPages);
       }
     });
@@ -56,13 +62,17 @@ export default class Tabs extends React.Component {
         page.active = (page.title === title);
         return page;
       });
+      AppDispatcher.dispatch({
+        action: 'loadPage',
+        title: title.toString(),
+      });
     }
     this.setOpenPages(openPages);
   }
 
   renderTab(props) {
     return (
-      <div key={props.title} role="tab" className={'tab-item' + (props.active ? ' active' : '')} onClick={(e) => this.handleTabClick(e, props.title)}>
+      <div key={shortid.generate()} role="tab" className={'tab-item' + (props.active ? ' active' : '')} onClick={(e) => this.handleTabClick(e, props.title)}>
         <span role="button" className="icon icon-cancel icon-close-tab" />
         {props.title}
       </div>

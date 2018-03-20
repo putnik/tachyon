@@ -1,5 +1,8 @@
 import React from 'react';
+import { UnControlled as CodeMirror } from 'react-codemirror2';
 import AppDispatcher from './AppDispatcher';
+
+require('codemirror/mode/xml/xml');
 
 export default class Editor extends React.Component {
   constructor(props) {
@@ -9,11 +12,12 @@ export default class Editor extends React.Component {
     this.state = {
       error: null,
       isLoaded: false,
-      old_content: content,
-      new_content: content,
+      loadedContent: content,
+      currentContent: content,
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.loadPage = this.loadPage.bind(this);
 
     const editor = this;
     AppDispatcher.register((payload) => {
@@ -32,8 +36,8 @@ export default class Editor extends React.Component {
           const content = result.query.pages[0].revisions[0].content;
           this.setState({
             isLoaded: true,
-            old_content: content,
-            new_content: content,
+            loadedContent: content,
+            currentContent: content,
           });
           AppDispatcher.dispatch({
             event: 'pageLoaded',
@@ -49,9 +53,9 @@ export default class Editor extends React.Component {
       );
   }
 
-  handleChange(event) {
+  handleChange(editor, data, value) {
     this.setState({
-      new_content: event.target.value,
+      currentContent: value,
     });
   }
 
@@ -59,14 +63,18 @@ export default class Editor extends React.Component {
     const containerStyle = {
       height: '100%',
     };
-    const areaStyle = {
-      width: '100%',
-      height: '99%',
-      fontFamily: 'monospace',
+    const editorOptions = {
+      lineNumbers: true,
+      lineWrapping: true,
+      mode: 'xml',
     };
     return (
       <div id="editor-container" style={containerStyle}>
-        <textarea id="editor-area" style={areaStyle} value={this.state.new_content} onChange={this.handleChange} />
+        <CodeMirror
+          value={this.state.loadedContent}
+          onChange={this.handleChange}
+          options={editorOptions}
+        />
       </div>
     );
   }
