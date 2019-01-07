@@ -1,5 +1,5 @@
 import React from 'react';
-import AppDispatcher from "./AppDispatcher";
+import AppDispatcher from './AppDispatcher';
 
 export default class Footer extends React.Component {
   constructor(props) {

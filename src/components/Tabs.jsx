@@ -41,7 +41,7 @@ export default class Tabs extends React.Component {
 
   setOpenPages(openPages) {
     this.setState({
-      openPages: openPages,
+      openPages,
     });
     storage.set('openPages', openPages, (error) => {
       if (error) throw error;
@@ -72,7 +72,7 @@ export default class Tabs extends React.Component {
 
   renderTab(props) {
     return (
-      <div key={shortid.generate()} role="tab" className={'tab-item' + (props.active ? ' active' : '')} onClick={(e) => this.handleTabClick(e, props.title)}>
+      <div key={shortid.generate()} role="tab" className={`tab-item${props.active ? ' active' : ''}`} onClick={e => this.handleTabClick(e, props.title)}>
         <span role="button" className="icon icon-cancel icon-close-tab" />
         {props.title}
       </div>

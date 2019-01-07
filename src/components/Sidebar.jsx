@@ -47,7 +47,7 @@ export default class Sidebar extends React.Component {
         recentPages.unshift({ icon: 'back-in-time', title: payload.title, active: true });
         recentPages.slice(0, 10);
         this.setState({
-          recentPages: recentPages,
+          recentPages,
         });
         storage.set('recentPages', recentPages, (error) => {
           if (error) throw error;
@@ -65,8 +65,8 @@ export default class Sidebar extends React.Component {
 
   renderSidebarGroupItem(props) {
     return (
-      <a href="#" key={shortid.generate()} className={'nav-group-item' + (props.active ? ' active' : '')} onClick={(e) => this.handleGroupItemClick(props.title)}>
-        <span className={'icon icon-' + props.icon} />
+      <a href="#" key={shortid.generate()} className={`nav-group-item${props.active ? ' active' : ''}`} onClick={e => this.handleGroupItemClick(props.title)}>
+        <span className={`icon icon-${props.icon}`} />
         {props.title}
       </a>
     );
@@ -74,13 +74,13 @@ export default class Sidebar extends React.Component {
 
   renderSidebarGroup(props) {
     const items = props.items;
-    const listItems = items.map((itemProps) =>
-      this.renderSidebarGroupItem(itemProps)
+    const listItems = items.map(itemProps =>
+      this.renderSidebarGroupItem(itemProps),
     );
     return (
-      <nav className="nav-group" id={'sidebar-' + props.id}>
+      <nav className="nav-group" id={`sidebar-${props.id}`}>
         <h5 className="nav-group-title">
-          <span className={'icon icon-' + props.icon} />
+          <span className={`icon icon-${props.icon}`} />
           {props.title}
         </h5>
         {listItems}
